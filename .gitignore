@@ -1,0 +1,5 @@
+.ipynb_checkpoints
+*.tar
+*.tar.1
+VOCdevkit/*
+
