@@ -27,10 +27,13 @@ RUN SHA=ToUcHMe python3 -m pip install --upgrade pip
 ENV LANG C.UTF-8
 
 # Install dependencies
+RUN apt-get update
+RUN apt-get install -y gfortran
 RUN python3 -m pip install torch
 RUN python3 -m pip install numpy
 RUN python3 -m pip install jupyter
-RUN python3 -m pip install scipy
+#RUN apt-get install gfortran
+RUN python3 -m pip install scipy==1.1.0
 RUN conda install pylint
 
 # Specify a new user (USER_NAME and USER_UID are specified via --build-arg)
@@ -57,4 +60,5 @@ WORKDIR /image-segmentation
 ENV PYTHONPATH="$PYTHONPATH:/image-segmentation"
 
 CMD ["/bin/bash"]
+
 
