@@ -2,4 +2,5 @@
 *.tar
 *.tar.1
 VOCdevkit/*
-
+*.pt
+*.pth
