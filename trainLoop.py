@@ -10,6 +10,18 @@ from tqdm import tqdm
 from utils import createIfNotExist, cityscapeColors, preview, saveModel
 
 def train(model, dataset, device, modelName, epochs, batch_size=1, saveEachEpoch = False, previewShow = False):
+    """
+    Trains the model and saves it in the given path
+
+    input:
+    model- the model that has to be trained of type nn.Module
+    dataset - the dataset on which the model has to be trained of type nn.Dataset.
+    modelName - the destination name string where the model weights are saved.
+    epochs - the number of epochs that the model has to iterate over.
+    batch_size -  the batch size of the model
+    saveEachEpoch -  to indicate whether to save at the end of each epoch.
+    previewShow - to indicate whether to show the outputs during the training progresses. If enabled, shows output for every 100th input.
+    """
     trainloader = data.DataLoader(
         dataset, 
         batch_size = batch_size, 

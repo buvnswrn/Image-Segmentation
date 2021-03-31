@@ -3,6 +3,10 @@ import torch
 
 
 class default_layer(nn.Module):
+    """
+    Default CNN like layer with convolution, maxpooling and ReLU.
+    """
+
     def __init__(self, in_channels, out_channels):
         super(default_layer, self).__init__()
         self.seq = nn.Sequential(
@@ -15,6 +19,9 @@ class default_layer(nn.Module):
         return self.seq(x)  
 
 class up_layer(nn.Module):
+    """
+    Decoding Layer of the Decoding Unit.
+    """
     def __init__(self,in_channels,out_channels):
         super(up_layer,self).__init__()
         self.upsample = nn.Upsample(scale_factor=2)
@@ -24,6 +31,9 @@ class up_layer(nn.Module):
         return self.layer(self.upsample(x))
 
 class recurrent_layer(nn.Module):
+    """
+    Default layers modified according to the recurrent block of R2U-Net.
+    """
     def __init__(self, channels):
         super(recurrent_layer, self).__init__()
         self.layer = default_layer(channels, channels)
@@ -32,6 +42,9 @@ class recurrent_layer(nn.Module):
         return self.layer(x + self.layer(x))  
 
 class recurrent_block(nn.Module):
+    """
+    Recurrent Residual Block of the R2U-Net. 
+    """
     def __init__(self,  in_channels, out_channels):
         super(recurrent_block, self).__init__()
         self.r2c = nn.Sequential(
@@ -45,6 +58,9 @@ class recurrent_block(nn.Module):
         return x + self.r2c(x)
 
 class down_block(nn.Module):
+    """
+    Encoding Unit of the R2U-Net.
+    """
     def __init__(self, in_channels, out_channels):
         super(down_block, self).__init__()
         self.r2c = recurrent_block(in_channels,out_channels)
@@ -55,6 +71,9 @@ class down_block(nn.Module):
         return self.maxpool(x), x
 
 class up_block(nn.Module):
+    """
+    Decoding Unit of the R2U-Net.
+    """
     def __init__(self, in_channels, out_channels):
         super(up_block, self).__init__()
         self.in_channels = in_channels
@@ -70,6 +89,9 @@ class up_block(nn.Module):
         return x
 
 class R2U_Net(nn.Module):
+    """
+    Class denoting Recurrent Residual Convolutional Neural Network Based on U-Net.
+    """
     def __init__(self, classes):
         super(R2U_Net, self).__init__()
         

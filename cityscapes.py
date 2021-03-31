@@ -3,7 +3,8 @@ from torchvision import transforms
 from PIL import Image
 import torch
 import numpy as np
-mapping = [7,8,11,12,13,17,19,20,21,22,23,24,25,26,27,28,31,32,33]
+
+mapping = [7,8,11,12,13,17,19,20,21,22,23,24,25,26,27,28,31,32,33] # labels that cannot be ignored as indicated in - https://github.com/mcordts/cityscapesScripts/blob/master/cityscapesscripts/helpers/labels.py
 
 configs = {
     "train" : {
@@ -18,6 +19,9 @@ configs = {
 }
 
 class cityscapes(data.Dataset):
+    """
+    Provides with an instance of the cityscapes dataset.
+    """
     def __init__(self, root, selection = "train"):        
         self.tf = transforms.Compose(
             [
