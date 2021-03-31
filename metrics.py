@@ -12,10 +12,13 @@ from IPython.display import clear_output
 import os
 import pandas as pd
 from IPython.display import HTML, display
-import tabulate
+# import tabulate
 from tqdm import tqdm
     
 class EvalResult:
+    """
+    Provides structure for storing the metrics
+    """
     def __init__(self, dice, jaccard, confusion_matrix):
         super(EvalResult, self).__init__()
         self.dice = dice
@@ -23,6 +26,17 @@ class EvalResult:
         self.confusion_matrix = confusion_matrix
 
 def evaluate(model, dataset, device):
+    """
+    Evaluates the model with respect to the dataset.
+    
+    returns: 
+    EvalResult object with Dice Coefficient,Jaccard Similarity, and the Confusion Matrix
+    
+    input: 
+    model - model to be evaluated of type nn.Module.
+    dataset - dataset object in nn.Dataset format.
+
+    """
     size = 19
     dice = np.zeros(size)
     dice_count = np.zeros(size)
@@ -79,10 +93,19 @@ def evaluate(model, dataset, device):
     
     return EvalResult(dice, jaccard, confusion_matrix)
 
-def plot(table):
-    display(HTML(tabulate.tabulate(torch.tensor(table), tablefmt='html')))
+# def plot(table):
+#     """
+#     Plots the evaluation results in a clean tabular form on the jupyter notebook. - deprecated.
+#     """
+#     display(HTML(tabulate.tabulate(torch.tensor(table), tablefmt='html')))
 
 def displayEval(evalResult):
+    """
+    Displays the evaluation results in a clean tabular format in the Jupyter Notebook.
+
+    input: object of type EvalResult.
+    """
+    
     confusion_matrix = evalResult.confusion_matrix
     stripped_dice = evalResult.dice
     stripped_jaccard = evalResult.jaccard

@@ -3,6 +3,9 @@ import torch
 import torch.nn.functional as F
 
 class ASPP(nn.Module):
+    """
+    Atrous Spatial Pyramid Pooling Unit of ASPP R2U-Net with Attention Gates.
+    """
     def __init__(self, in_channel=512, depth=256):
         super(ASPP,self).__init__()
         # global average pooling : init nn.AdaptiveAvgPool2d ;also forward torch.mean(,,keep_dim=True)
@@ -34,6 +37,9 @@ class ASPP(nn.Module):
         return net
 
 class reshape_layer(nn.Module):
+    """
+    Reshaping the input by performing convolution and batch normalisation.
+    """
     def __init__(self, in_channels, out_channels):
         super(reshape_layer, self).__init__()
         self.seq = nn.Sequential(
@@ -45,6 +51,9 @@ class reshape_layer(nn.Module):
         return self.seq(x)  
     
 class default_layer(nn.Module):
+    """
+    Default CNN like layer with convolution, maxpooling and ReLU.
+    """
     def __init__(self, in_channels, out_channels):
         super(default_layer, self).__init__()
         self.seq = nn.Sequential(
@@ -57,6 +66,9 @@ class default_layer(nn.Module):
         return self.seq(x)  
     
 class up_layer(nn.Module):
+    """
+    Decoding Layer of the Decoding Unit.
+    """
     def __init__(self,in_channels,out_channels):
         super(up_layer,self).__init__()
         self.upsample = nn.Upsample(scale_factor=2)
@@ -66,6 +78,9 @@ class up_layer(nn.Module):
         return self.layer(self.upsample(x))
 
 class recurrent_layer(nn.Module):
+    """
+    Default layers modified according to the recurrent block of R2U-Net.
+    """
     def __init__(self, channels):
         super(recurrent_layer, self).__init__()
         self.layer = default_layer(channels, channels)
@@ -74,6 +89,9 @@ class recurrent_layer(nn.Module):
         return self.layer(x + self.layer(x))  
     
 class recurrent_block(nn.Module):
+    """
+    Recurrent Residual Block of the R2U-Net. 
+    """
     def __init__(self,  in_channels, out_channels):
         super(recurrent_block, self).__init__()
         self.r2c = nn.Sequential(
@@ -87,6 +105,9 @@ class recurrent_block(nn.Module):
         return x + self.r2c(x)
     
 class down_block(nn.Module):
+    """
+    Encoding Unit of the R2U-Net.
+    """
     def __init__(self, in_channels, out_channels):
         super(down_block, self).__init__()
         self.r2c = recurrent_block(in_channels,out_channels)
@@ -97,6 +118,9 @@ class down_block(nn.Module):
         return self.maxpool(x), x
     
 class up_block(nn.Module):
+    """
+    Decoding Unit of the R2U-Net.
+    """
     def __init__(self, in_channels, out_channels):
         super(up_block, self).__init__()
         self.up_layer = up_layer(in_channels, out_channels)
@@ -111,6 +135,9 @@ class up_block(nn.Module):
         return x
     
 class attention_block(nn.Module):
+    """
+    Attention Gates Unit of the ASPP R2U-Net with Attention Gate.
+    """
     def __init__(self, in_channels, out_channels):
         super(attention_block, self).__init__()
         self.in_channels = in_channels
@@ -129,6 +156,9 @@ class attention_block(nn.Module):
         return attachment * self.sigmoid(self.output_reshape( relu ))
     
 class R2U_Net_Optimized(nn.Module):
+    """
+    Class denoting Atrous Spatial Pyramid Pooling R2U-Net with Attention Gates.
+    """
     def __init__(self, classes):
         super(R2U_Net_Optimized, self).__init__()
         
