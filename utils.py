@@ -2,6 +2,7 @@
 import os
 from PIL import Image
 import torch
+from torch.utils import data
 
 from torchvision import transforms
 
@@ -159,11 +160,16 @@ def cityscapeColors():
     return _colors
 # -
 
-def generateImages(root, images = range(20)):
+
+def generateImages(model, dataset, device, root, images = range(20)):
     createIfNotExist(root)
+    
+    trainloader = data.DataLoader(
+        dataset, 
+        batch_size = 1, 
+        num_workers = 10)
 
     pos = 0
-    model.train()
     with torch.no_grad():
         for i, (inputs, targets) in enumerate(trainloader):
             if images[pos] < i:
@@ -171,7 +177,6 @@ def generateImages(root, images = range(20)):
 
             pos+=1
 
-            #if loss != None and i % 50 == 0:
             inputs = inputs.to(device)
             targets = targets.to(device)
 
@@ -180,13 +185,12 @@ def generateImages(root, images = range(20)):
             outputs = outputs.cpu()
             targets = targets.cpu()
 
-
             targetValues, targetIndices = targets.max(dim=1)
             values, indices = outputs.max(dim=1)
 
             noValidate = targetValues < 0.1
-            targetIndices[noValidate] = size
-            indices[noValidate] = size
+            targetIndices[noValidate] = 19
+            indices[noValidate] = 19
 
 
             colorImage = torch.stack([_colors[indices, 0 ], _colors[indices, 1], _colors[indices, 2]], dim=1)
