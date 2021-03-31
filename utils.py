@@ -49,8 +49,8 @@ def resizeAllImages(src, target):
     target - target path where the processed images has to be stored.
     """
     for dataset in ["train", "val"]:
-        inputRoot = src + "leftImg8bit/" + dataset + "/"
-        targetRoot = src + "gtFine/" + dataset + "/"
+        inputRoot = src + "/leftImg8bit/" + dataset + "/"
+        targetRoot = src + "/gtFine/" + dataset + "/"
         inputSuffix = '_leftImg8bit.png'
         targetSuffix = '_gtFine_labelIds.png'
 
