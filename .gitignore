@@ -1,4 +1,3 @@
-*.model
 core
 VOCdevkit/
 .ipynb_checkpoints/
