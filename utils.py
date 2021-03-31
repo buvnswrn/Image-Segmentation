@@ -9,11 +9,17 @@ from torchvision import transforms
 # -
 
 def removesuffix(content, suffix):
+    """
+    removes the suffix attached to the file name
+    """
     if content.endswith(suffix):
         content = content[:-len(suffix)]
     return content
 
 def findFiles(rootDir, suffix):
+    """
+    returns: list of files in the directory.
+    """
     files = []
     for r, d, f in os.walk(rootDir):
         for file in f:
@@ -22,13 +28,26 @@ def findFiles(rootDir, suffix):
     return files
 
 def substringBefore(string, char):
+    """
+    returns the substring before a given character in a string
+    """
     return string[:string.index(char)]
 
 def createIfNotExist(directory):
+    """
+    create a directory if doesn't exist
+    """
     if not os.path.exists(directory):
         os.makedirs(directory)
 
 def resizeAllImages(src, target):
+    """
+    Preprocesses the data by resizing and saving it in the target path.
+
+    input:
+    src - source string where the leftImg8bit and gtFine packages of cityscapes dataset can be found.
+    target - target path where the processed images has to be stored.
+    """
     for dataset in ["train", "val"]:
         inputRoot = src + "leftImg8bit/" + dataset + "/"
         targetRoot = src + "gtFine/" + dataset + "/"
@@ -63,14 +82,32 @@ def resizeAllImages(src, target):
 
 
 def saveModel(model, root, epoch):
+    """
+    saves the model on the given path - deprecated.
+
+    model - model to be saved.
+    root- string indicating the path where the model will be saved.
+    epoch - the epoch number to be appended to the model name.
+    """
     torch.save(model, root + "/r2u_epoch_" + str(epoch) + ".model")
 
-from IPython.display import clear_output
+from IPython.display import clear_output,display
 def displayTensorAsImage( tensor ):
+    """
+    display the given tensor as image on the Jupyter Notebook
+    """
     display(transforms.ToPILImage()( tensor ))
 
 
 def preview(inputs, outputs, targets, epoch):
+    """
+    Shows the preview of the images.
+
+    inputs - input tensor that has to be displayed as image.
+    outputs - output of the model
+    targets - target tensors that has to be displayed as image.
+    """
+
     colors = cityscapeColors()
     
     outputs = outputs.cpu()
