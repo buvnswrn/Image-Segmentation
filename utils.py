@@ -159,4 +159,47 @@ def cityscapeColors():
     return _colors
 # -
 
+def generateImages(root, images = range(20)):
+    createIfNotExist(root)
 
+    pos = 0
+    model.train()
+    with torch.no_grad():
+        for i, (inputs, targets) in enumerate(trainloader):
+            if images[pos] < i:
+                continue
+
+            pos+=1
+
+            #if loss != None and i % 50 == 0:
+            inputs = inputs.to(device)
+            targets = targets.to(device)
+
+            outputs = model(inputs)
+
+            outputs = outputs.cpu()
+            targets = targets.cpu()
+
+
+            targetValues, targetIndices = targets.max(dim=1)
+            values, indices = outputs.max(dim=1)
+
+            noValidate = targetValues < 0.1
+            targetIndices[noValidate] = size
+            indices[noValidate] = size
+
+
+            colorImage = torch.stack([_colors[indices, 0 ], _colors[indices, 1], _colors[indices, 2]], dim=1)
+            targetImage = torch.stack([_colors[targetIndices, 0 ], _colors[targetIndices, 1], _colors[targetIndices, 2]], dim=1)
+
+            targetImage = transforms.ToPILImage()( targetImage[0] )
+            outputImage = transforms.ToPILImage()( colorImage[0] )
+
+            display(targetImage)
+            display(outputImage)
+
+            targetImage.save(root + "/t2-gt-val" + str(pos) +  ".png")
+            outputImage.save(root + "/t2-pred-val" + str(pos) +  ".png")
+
+            if len(images) == pos:
+                break
